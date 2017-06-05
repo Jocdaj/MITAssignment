@@ -1,0 +1,537 @@
+﻿
+@{
+    ViewBag.Title = "Map";
+}
+
+<script src="../../Scripts/nmeaLoader.js" type="text/javascript"></script>
+<script src="../../Scripts/kmlLoader.js" type="text/javascript"></script>
+
+<style>
+    html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+    }
+
+    #map {
+        height: 700px;
+    }
+</style>
+
+
+
+<script>
+    $(document).ready(function () {
+        initMap();
+
+    });
+    function initMap() {
+        var myLatlng = { lat: 35.8762892, lng: 14.5065236 };
+
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 4,
+            center: myLatlng
+        });
+
+       var marker = new google.maps.Marker({
+            //position: myLatlng,
+            map: map,
+            title: 'Click to zoom'
+        });
+        
+        marker.addListener('click', function () {
+            map.setZoom(8);
+            map.setCenter(marker.getPosition());
+        });
+
+        map.addListener('click', function (e) {
+
+            var latLng = e.latLng;
+
+            var marker = new google.maps.Marker({
+                position: latLng,
+                draggable: true,
+                map: map
+            })
+
+        });
+        map.events.register('mousemove', map, function (e) {
+            var pos = this.events.getMousePosition(e);
+
+        });
+
+        map.events.register('click', map, function (e) {
+            var lonlat_object = map.getLonLatFromViewPortPx(e.xy);
+
+            document.getElementById('lon').value = lonlat_object.lon;
+            document.getElementById('lat').value = lonlat_object.lat;
+        });
+    }
+    function sendRequest(url, params) {
+        ////if (window.XMLHttpRequest) { // Mozilla/Safari
+        ////    req = new XMLHttpRequest();
+        ////} else {
+        ////    req = new ActiveXObject("Microsoft.XMLHTTP"); // IE
+        ////}
+
+        req.onreadystatechange = onReadyStateChange;
+        req.open("POST", url, true);
+        req.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+        req.send(params);
+    }
+    function onReadyStateChange() {
+        var ready = req.readyState;
+
+        if (ready == 4 && req.status == 200) { // Request was successful!
+            var data = req.responseText;
+        }
+    }
+    function sendRequestLoadNMEA() {
+        var req = new XMLHttpRequest();
+
+        var username = document.getElementById("txtUsername").value;
+
+        req.open("GET", username + 'Text.txt');
+        req.onreadystatechange = function () {
+            var divCont = document.getElementById("dataContainer");
+            divCont.style.visibility = "visible";
+
+            var divUploader = document.getElementById("divUploader");
+            divUploader.style.visibility = "hidden";
+
+            var ready = req.readyState;
+            if (ready == 4 && req.status == 200) {
+
+                var data = req.responseText;
+                var arr = JSON.parse(data); //from json2.js
+                var arrNew = arr.array;
+                var tbl = document.createElement('table');
+
+                var tr = document.createElement('tr');
+                //td for longitude
+                var td_long = document.createElement('th');
+                var tn_long = document.createTextNode('Longitude');
+                //td for latitude
+                var td_lat = document.createElement('th');
+                var tn_lat = document.createTextNode('Latitude');
+                //td for title
+                var td_title = document.createElement('th');
+                var tn_title = document.createTextNode('Title');
+                //td for description
+                var td_desc = document.createElement('th');
+                var tn_desc = document.createTextNode('Description');
+                //td for icon
+                var td_icon = document.createElement('th');
+                var tn_icon = document.createTextNode('Icon');
+
+
+                td_long.appendChild(tn_long);
+                td_lat.appendChild(tn_lat);
+                td_title.appendChild(tn_title);
+                td_desc.appendChild(tn_desc);
+                td_icon.appendChild(tn_icon);
+
+                tr.appendChild(td_long);
+                tr.appendChild(td_lat);
+                tr.appendChild(td_title);
+                tr.appendChild(td_desc);
+                tr.appendChild(td_icon);
+                tbl.appendChild(tr);
+
+                for (i = 0; i < arrNew.length; i++) {
+                    var URLpath = "http://maps.google.com/maps?q=" + arrNew[i].Latitude + ",+" + arrNew[i].Logitute + "+%28" + arrNew[i].Title + "%29&iwloc=A&hl=en";
+                    var tr = document.createElement('tr');
+                    //td for longitude
+                    var td_long = document.createElement('td');
+                    var tn_long = document.createTextNode(arrNew[i].Logitute);
+                    //td for latitude
+                    var td_lat = document.createElement('td');
+                    var tn_lat = document.createTextNode(arrNew[i].Latitude);
+                    //td for title
+                    var td_title = document.createElement('td');
+                    var tn_title = document.createTextNode(arrNew[i].Title);
+                    //td for description
+                    var td_desc = document.createElement('td');
+                    var tn_desc = document.createTextNode(arrNew[i].Description);   
+                    //td for icon
+                    var td_icon = document.createElement('td');
+                    var tn_icon = document.createTextNode(arrNew[i].Icon);
+                    //td for url
+
+                    var td_url = document.createElement('td');
+                    var link_url = document.createElement("a");
+                    link_url.setAttribute("href", URLpath);
+                    link_url.setAttribute('target', "_blank");
+
+                    var tn_url = document.createTextNode("Open URL");
+
+                    td_long.appendChild(tn_long);
+                    td_lat.appendChild(tn_lat);
+                    td_title.appendChild(tn_title);
+                    td_desc.appendChild(tn_desc);
+                    td_icon.appendChild(tn_icon);
+                    td_url.appendChild(link_url);
+
+                    tr.appendChild(td_long);
+                    tr.appendChild(td_lat);
+                    tr.appendChild(td_title);
+                    tr.appendChild(td_desc);
+                    tr.appendChild(td_icon);
+                    tr.appendChild(td_url);
+                    link_url.appendChild(tn_url);
+
+
+                    tbl.appendChild(tr);
+                }
+
+                document.getElementById('dataContainer').appendChild(tbl);
+            }
+
+        }
+        req.send();
+
+    }
+    function sendRequestLoadMarkers() {
+
+        var req = new XMLHttpRequest();
+
+        var username = document.getElementById("txtUsername").value;
+
+        req.open("GET", 'https://localhost:44378//Markers/' + username + "Text.txt");
+
+        req.onreadystatechange = function () {
+            var divCont = document.getElementById("dataContainer");
+            divCont.style.visibility = "visible";
+
+            var divUploader = document.getElementById("divUploader");
+            divUploader.style.visibility = "hidden";
+
+            var ready = req.readyState;
+            if (ready == 4 && req.status == 200) {
+
+                var data = req.responseText;
+                var arr = JSON.parse(data); //from json2.js
+                var arrNew = arr.array;
+
+                var tbl = document.createElement('table');
+
+                var tr = document.createElement('tr');
+                //td for longitude
+                var td_long = document.createElement('td');
+                var tn_long = document.createTextNode('Longitude');
+                //td for latitude
+                var td_lat = document.createElement('td');
+                var tn_lat = document.createTextNode('Latitude');
+                //td for title
+                var td_title = document.createElement('td');
+                var tn_title = document.createTextNode('Title');
+                //td for description
+                var td_desc = document.createElement('td');
+                var tn_desc = document.createTextNode('Description');
+                //td for icon
+                var td_icon = document.createElement('td');
+                var tn_icon = document.createTextNode('Icon');
+
+
+                td_long.appendChild(tn_long);
+                td_lat.appendChild(tn_lat);
+                td_title.appendChild(tn_title);
+                td_desc.appendChild(tn_desc);
+                td_icon.appendChild(tn_icon);
+
+                tr.appendChild(td_long);
+                tr.appendChild(td_lat);
+                tr.appendChild(td_title);
+                tr.appendChild(td_desc);
+                tr.appendChild(td_icon);
+
+                tbl.appendChild(tr);
+
+                for (i = 0; i < arrNew.length; i++) {
+
+                    var tr = document.createElement('tr');
+                    //td for longitude
+                    var td_long = document.createElement('td');
+                    var tn_long = document.createTextNode(arrNew[i].Longitude);
+                    //td for latitude
+                    var td_lat = document.createElement('td');
+                    var tn_lat = document.createTextNode(arrNew[i].Latitude);
+                    //td for title
+                    var td_title = document.createElement('td');
+                    var tn_title = document.createTextNode(arrNew[i].Title);
+                    //td for description
+                    var td_desc = document.createElement('td');
+                    var tn_desc = document.createTextNode(arrNew[i].Description);
+                    //td for icon
+                    var td_icon = document.createElement('td');
+                    var tn_icon = document.createTextNode(arrNew[i].Icon);
+                    //td for url
+
+                    
+
+                    td_title.appendChild(tn_title);
+                    td_desc.appendChild(tn_desc);
+                    td_long.appendChild(tn_long);
+                    td_lat.appendChild(tn_lat);
+                    td_icon.appendChild(tn_icon);
+
+                    tr.appendChild(td_title);
+                    tr.appendChild(td_desc);
+                    tr.appendChild(td_long);
+                    tr.appendChild(td_lat);
+                    tr.appendChild(td_icon);
+
+
+                    tbl.appendChild(tr);
+                }
+
+                document.getElementById('dataContainer').appendChild(tbl);
+            }
+
+        }
+        req.send();
+    }
+    function SaveMarker() {
+
+        var lon = document.getElementById("lon").value;
+        var lat = document.getElementById("lat").value;
+        var title = document.getElementById("txtTitle").value;
+        var desc = document.getElementById("txtDesc").value;
+        var e = document.getElementById("ddlMark");
+        var username = document.getElementById("txtUsername").value;
+    
+        var ForWriting = 2;
+        var TristateFalse = 0;
+        var TristateTrue = -1;
+
+        var textPref = { "Username": username, "Longitude": lon, "Latitude": lat, "Title": title, "Description": desc, "Icon": icon1 };
+        var test = '{"array": [';
+        var lastPart = '] }';
+
+        var alltext = textPref;
+
+        var pref = JSON.parse(JSON.stringify(textPref));
+        textPref = JSON.stringify(pref);
+        var fso = new ActiveXObject("Scripting.FileSystemObject");
+
+        if (fso.FileExists("C:\\Users\\User\\Documents\\Visual Studio 2015\\Projects\\MITAssignment\\MITAssignment\\Markers\\" + username + "Text.txt")) {
+
+            //open for unicode
+            var s = fso.OpenTextFile("C:\\Users\\User\\Documents\\Visual Studio 2015\\Projects\\MITAssignment\\MITAssignment\\Markers\\" + username + "Text.txt");
+            var str = s.ReadAll();
+            s.Close();
+
+            var newstr = str.substring(0, str.length - 5) + "\r\n";
+
+            newstr += "," + textPref + lastPart;
+
+            s = fso.GetFile("C:\\Users\\User\\Documents\\Visual Studio 2010\\Projects\\IMT-Assignment\\Website\\Markers\\" + username + "Text.txt");
+            s = s.OpenAsTextStream(ForWriting, TristateFalse);
+            s.WriteLine(newstr);
+            s.Close();
+        }
+        else {
+
+            fso.CreateTextFile("C:\\Users\\User\\Documents\\Visual Studio 2015\\Projects\\MITAssignment\\MITAssignment\\Markers\\" + username + "Text.txt", true, true);
+            var fileObj = fso.GetFile("C:\\Users\\User\\Documents\\Visual Studio 2015\\Projects\\MITAssignment\\MITAssignment\\Markers\\" + username + "Text.txt");
+
+            //open for unicode
+            var s = fileObj.OpenAsTextStream(ForWriting, TristateFalse);
+            s.WriteLine(test + textPref + lastPart);
+            s.Close();
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: "/Map/SaveMarker",
+            datatype: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(pref),
+            success: function (data) {
+            }
+        });
+
+        return false;
+    }
+    function ShownNMEAfile() {
+        $.ajax({
+            type: 'POST',
+            url: "/Map/NMEAToJsonList",
+            datatype: 'json',
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(),
+            success: function (data) {
+                var obj = $.parseJSON(data);
+
+                var tbl = document.createElement('table');
+
+                var tr = document.createElement('tr');
+
+                //td for latitude
+                var td_lat = document.createElement('td');
+                var tn_lat = document.createTextNode('Latitude');
+                //td for longitude
+                var td_long = document.createElement('td');
+                var tn_long = document.createTextNode('Longitude');
+                //td for time
+                var td_time = document.createElement('td');
+                var tn_time = document.createTextNode('Time');
+
+                td_lat.appendChild(tn_lat);
+                td_long.appendChild(tn_long);
+                td_time.appendChild(tn_time);
+
+                tr.appendChild(td_lat);
+                tr.appendChild(td_long);
+                tr.appendChild(td_time);
+
+                tbl.appendChild(tr);
+
+                for (i = 0; i < obj.length; i++) {
+
+                    var tr = document.createElement('tr');
+
+                    //td for latitude
+                    var td_lat = document.createElement('td');
+                    var tn_lat = document.createTextNode(obj[i].Lat);
+                    //td for longitude
+                    var td_long = document.createElement('td');
+                    var tn_long = document.createTextNode(obj[i].Lon);
+                    //td for time
+                    var td_time = document.createElement('td');
+                    var tn_time = document.createTextNode(obj[i].Time);
+
+                    td_lat.appendChild(tn_lat);
+                    td_long.appendChild(tn_long);
+                    td_time.appendChild(tn_time);
+
+                    tr.appendChild(td_lat);
+                    tr.appendChild(td_long);
+                    tr.appendChild(td_time);
+
+                    tbl.appendChild(tr);
+                }
+
+                document.getElementById('dataContainer').appendChild(tbl);
+            }
+        });
+    }
+</script>
+<div onload="initMap()">
+    <div id="map" class="smallmap"></div>
+</div>
+<br />
+<br />
+<fieldset class="fieldset">
+    <legend>Save Marker</legend>
+    <table>
+        <tr>
+            <td align="right">
+                <label>
+                    Longitude
+                </label>
+            </td>
+            <td class="style1">
+                <input type="text" id="lon" required />
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <label>
+                    Latitude
+                </label>
+            </td>
+            <td class="style1">
+                <input type="text" id="lat" required />
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <label>
+                    Title
+                </label>
+            </td>
+            <td class="style1">
+                <input type="text" id="txtTitle" required />
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <label>
+                    Description
+                </label>
+            </td>
+            <td class="style1">
+                <input type="text" id="txtDesc" required />
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <label>
+                    Username
+                </label>
+            </td>
+            <td class="style1">
+
+
+                <input type="text" id="txtUsername" value="@User.Identity.Name" readonly />
+
+
+
+            </td>
+        </tr>
+        <tr>
+            <td align="right">
+                <label>
+                    Marker colour
+                </label>
+            </td>
+            <td class="style1">
+                <select id="ddlMark" style="width: 155px; height: 23px;">
+                    <option value="Red">Red</option>
+                    <option value="Green">Green</option>
+                    <option value="Blue">Blue</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td class="style1"></td>
+        </tr>
+    </table>
+    <button type="button" style="width: 100px; float: right;" onclick="SaveMarker()">
+        Save
+    </button>
+    <form id="form1" runat="server">
+        @Html.ActionLink("Download Backup File", "DownloadBackupFile", new { Url = User.Identity.Name + "Text.txt" })
+    </form>
+</fieldset>
+<br />
+<br />
+<br />
+<br />
+<div id="GPXcontent">
+    <input type="button" value="Load Markers" onclick="sendRequestLoadMarkers()" />
+    <button name="loadNMEA" onclick="loadNMEA()">
+        Load NMEA
+    </button>
+    <button name="loadKML" onclick="loadKML()">
+        Load KML
+    </button>
+    <button name="loadKML" onclick="ShownNMEAfile()">
+        Show NMEA File Data
+    </button>
+    <br /><br />
+</div>
+
+<div id='dataContainer' style="position: relative">
+</div>
+<br />
+<div id='divUploader' style="position: relative">
+</div>
+<br />
+</div>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDibYDBBJMi2zvBqY-2Lk6obhvTm5Om_m8&callback=initMap">
+</script>
+

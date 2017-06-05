@@ -1,0 +1,13 @@
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\aspnet-MITAssignment-20170519112637.mdf
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\aspnet-MITAssignment-20170519112637_log.ldf
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\BL.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\BL.pdb
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\Common.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\DataAccess.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\EntityFramework.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\Common.pdb
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\DataAccess.pdb
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\bin\Debug\EntityFramework.xml
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\obj\Debug\BL.csprojResolveAssemblyReference.cache
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\obj\Debug\BL.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\BL\obj\Debug\BL.pdb

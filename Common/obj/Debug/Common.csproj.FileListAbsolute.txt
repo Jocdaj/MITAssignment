@@ -1,0 +1,12 @@
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\aspnet-MITAssignment-20170519112637.mdf
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\aspnet-MITAssignment-20170519112637_log.ldf
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\Common.dll.config
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\Common.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\Common.pdb
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\EntityFramework.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\EntityFramework.xml
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\obj\Debug\Common.dll
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\obj\Debug\Common.pdb
+C:\Users\jocelyn\Documents\Visual Studio 2015\Projects\MITAssignment\Common\obj\Debug\Common.csprojResolveAssemblyReference.cache
